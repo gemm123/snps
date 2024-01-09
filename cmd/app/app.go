@@ -3,8 +3,10 @@ package main
 import (
 	"github.com/joho/godotenv"
 	"log"
-	"net/http"
 	"synapsis/config"
+	"synapsis/internal/handler"
+	"synapsis/internal/repository"
+	"synapsis/internal/service"
 
 	"github.com/gin-gonic/gin"
 )
@@ -21,11 +23,19 @@ func main() {
 	}
 	defer config.CloseDB(db)
 
+	//repository
+	userRepository := repository.NewUserRepository(db)
+
+	//service
+	userService := service.NewUserService(userRepository)
+
+	//handler
+	userHandler := handler.NewUserHandler(userService)
+
 	router := gin.Default()
-	router.GET("/ping", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "pong",
-		})
-	})
+	
+	v1 := router.Group("/api/v1")
+	v1.POST("/register", userHandler.Register)
+
 	router.Run()
 }
