@@ -2,7 +2,6 @@ package service
 
 import (
 	"errors"
-	"fmt"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
@@ -34,8 +33,6 @@ func (s *userService) Register(user model.Register) error {
 		log.Println("error: " + err.Error())
 		return err
 	}
-
-	fmt.Println(emailDB)
 
 	if emailDB != "" {
 		log.Println("error: " + "email has been registered")

@@ -25,18 +25,24 @@ func main() {
 
 	//repository
 	userRepository := repository.NewUserRepository(db)
+	productRepository := repository.NewProductRepository(db)
+	categoryRepository := repository.NewCategoryRepository(db)
 
 	//service
 	userService := service.NewUserService(userRepository)
+	productService := service.NewProductService(productRepository, categoryRepository)
 
 	//handler
 	userHandler := handler.NewUserHandler(userService)
+	productHandler := handler.NewProductHandler(productService)
 
 	router := gin.Default()
 
 	v1 := router.Group("/api/v1")
 	v1.POST("/register", userHandler.Register)
 	v1.POST("/login", userHandler.Login)
+
+	v1.GET("/category/:category-name/product", productHandler.GetAllProductByNameCategory)
 
 	router.Run()
 }
