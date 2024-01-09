@@ -23,3 +23,8 @@ type Register struct {
 	Address  string `json:"address" binding:"required"`
 	Phone    string `json:"phone" binding:"required"`
 }
+
+type Login struct {
+	Email    string `json:"email" binding:"required,email"`
+	Password string `json:"password" binding:"required"`
+}

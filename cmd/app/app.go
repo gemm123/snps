@@ -33,9 +33,10 @@ func main() {
 	userHandler := handler.NewUserHandler(userService)
 
 	router := gin.Default()
-	
+
 	v1 := router.Group("/api/v1")
 	v1.POST("/register", userHandler.Register)
+	v1.POST("/login", userHandler.Login)
 
 	router.Run()
 }

@@ -3,11 +3,14 @@ package service
 import (
 	"errors"
 	"fmt"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 	"log"
+	"os"
 	"synapsis/internal/model"
 	"synapsis/internal/repository"
+	"time"
 )
 
 type userService struct {
@@ -16,6 +19,7 @@ type userService struct {
 
 type UserService interface {
 	Register(user model.Register) error
+	Login(login model.Login) (string, error)
 }
 
 func NewUserService(userRepository repository.UserRepository) *userService {
@@ -59,4 +63,38 @@ func (s *userService) Register(user model.Register) error {
 	}
 
 	return nil
+}
+
+func (s *userService) Login(login model.Login) (string, error) {
+	password, err := s.userRepository.GetPasswordByEmail(login.Email)
+	if err != nil {
+		log.Println("error: " + err.Error())
+		return "", err
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(password), []byte(login.Password))
+	if err != nil {
+		log.Println("error: " + err.Error())
+		return "", err
+	}
+
+	user, err := s.userRepository.GetUserByEmail(login.Email)
+	if err != nil {
+		log.Println("error: " + err.Error())
+		return "", err
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"id":    user.Id,
+		"email": user.Email,
+		"exp":   time.Now().Add(time.Hour * 24).Unix(),
+	})
+
+	tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRETKEY")))
+	if err != nil {
+		log.Println("error: " + err.Error())
+		return "", err
+	}
+
+	return tokenString, nil
 }
