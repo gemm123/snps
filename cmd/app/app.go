@@ -29,16 +29,19 @@ func main() {
 	productRepository := repository.NewProductRepository(db)
 	categoryRepository := repository.NewCategoryRepository(db)
 	cartRepository := repository.NewCartRepository(db)
+	orderRepository := repository.NewOrderRepository(db)
 
 	//service
 	userService := service.NewUserService(userRepository)
 	productService := service.NewProductService(productRepository, categoryRepository)
 	cartService := service.NewCartService(cartRepository, productRepository)
+	orderService := service.NewOrderService(orderRepository, cartRepository)
 
 	//handler
 	userHandler := handler.NewUserHandler(userService)
 	productHandler := handler.NewProductHandler(productService)
 	cartHandler := handler.NewCartHandler(cartService)
+	orderHandler := handler.NewOrderHandler(orderService, cartService)
 
 	router := gin.Default()
 
@@ -51,6 +54,8 @@ func main() {
 	v1.POST("/cart", middleware.Auth(), cartHandler.AddProductToCart)
 	v1.GET("/cart", middleware.Auth(), cartHandler.GetCartProduct)
 	v1.DELETE("/cart/delete/:id-product", middleware.Auth(), cartHandler.DeleteCartProduct)
+
+	v1.POST("/order", middleware.Auth(), orderHandler.AddOrderProduct)
 
 	router.Run()
 }

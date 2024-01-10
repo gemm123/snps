@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	"github.com/google/uuid"
 	"log"
 	"synapsis/internal/model"
@@ -167,8 +166,6 @@ func (s *cartService) DeleteCartProduct(idProduct, idUser uuid.UUID) error {
 		log.Println("error: " + err.Error())
 		return err
 	}
-
-	fmt.Println(cartProduct)
 
 	if err := s.cartRepository.DeleteCartProduct(cartProduct); err != nil {
 		log.Println("error: " + err.Error())
