@@ -13,6 +13,7 @@ type productRepository struct {
 type ProductRepository interface {
 	GetAllProductByCategoryName(name string) ([]model.Product, error)
 	GetProductById(idProduct uuid.UUID) (model.Product, error)
+	UpdateProduct(product model.Product) error
 }
 
 func NewProductRepository(DB *gorm.DB) *productRepository {
@@ -35,4 +36,9 @@ func (r *productRepository) GetProductById(idProduct uuid.UUID) (model.Product, 
 	var product model.Product
 	err := r.DB.Table("products").Where("id = ?", idProduct).Find(&product).Error
 	return product, err
+}
+
+func (r *productRepository) UpdateProduct(product model.Product) error {
+	err := r.DB.Save(&product).Error
+	return err
 }

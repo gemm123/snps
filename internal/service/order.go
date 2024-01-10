@@ -67,6 +67,18 @@ func (s *orderService) AddOrderProduct(orderProducts []model.OrderProductRequest
 			log.Println("error: " + err.Error())
 			return err
 		}
+
+		product, err := s.productRepository.GetProductById(op.IdProduct)
+		if err != nil {
+			log.Println("error: " + err.Error())
+			return err
+		}
+
+		product.Stok = product.Stok - orderProduct.Quantity
+		if err := s.productRepository.UpdateProduct(product); err != nil {
+			log.Println("error: " + err.Error())
+			return err
+		}
 	}
 
 	return nil
