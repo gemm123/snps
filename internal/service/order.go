@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"github.com/google/uuid"
 	"log"
 	"synapsis/internal/model"
@@ -35,6 +36,10 @@ func (s *orderService) AddOrderProduct(orderProducts []model.OrderProductRequest
 	if err != nil {
 		log.Println("error: " + err.Error())
 		return err
+	}
+	if cart.Total == 0 {
+		log.Println("error: cart not found")
+		return errors.New("cart not found")
 	}
 
 	order := model.Order{
