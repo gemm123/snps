@@ -35,7 +35,7 @@ func main() {
 	userService := service.NewUserService(userRepository)
 	productService := service.NewProductService(productRepository, categoryRepository)
 	cartService := service.NewCartService(cartRepository, productRepository)
-	orderService := service.NewOrderService(orderRepository, cartRepository)
+	orderService := service.NewOrderService(orderRepository, cartRepository, productRepository)
 
 	//handler
 	userHandler := handler.NewUserHandler(userService)
@@ -56,6 +56,7 @@ func main() {
 	v1.DELETE("/cart/delete/:id-product", middleware.Auth(), cartHandler.DeleteCartProduct)
 
 	v1.POST("/order", middleware.Auth(), orderHandler.AddOrderProduct)
+	v1.GET("/order", middleware.Auth(), orderHandler.GetOrderProduct)
 
 	router.Run()
 }

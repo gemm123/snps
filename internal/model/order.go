@@ -29,3 +29,18 @@ type OrderProductRequest struct {
 	Quantity  int       `json:"quantity" binding:"required"`
 	Total     int       `json:"total" binding:"required"`
 }
+
+type OrderResponse struct {
+	IdOrder      uuid.UUID              `json:"id_order"`
+	TotalPrice   int                    `json:"total_price"`
+	Status       string                 `json:"status"`
+	OrderProduct []OrderProductResponse `json:"order_product"`
+}
+
+type OrderProductResponse struct {
+	IdProduct uuid.UUID `json:"id_product"`
+	Name      string    `json:"name"`
+	Price     int       `json:"price"`
+	Quantity  int       `json:"quantity"`
+	Total     int       `json:"total"`
+}
