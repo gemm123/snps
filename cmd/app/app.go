@@ -50,6 +50,7 @@ func main() {
 
 	v1.POST("/cart", middleware.Auth(), cartHandler.AddProductToCart)
 	v1.GET("/cart", middleware.Auth(), cartHandler.GetCartProduct)
+	v1.DELETE("/cart/delete/:id-product", middleware.Auth(), cartHandler.DeleteCartProduct)
 
 	router.Run()
 }

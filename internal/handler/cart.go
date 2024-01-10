@@ -75,3 +75,27 @@ func (h *cartHandler) GetCartProduct(ctx *gin.Context) {
 		"data": cartResponse,
 	})
 }
+
+func (h *cartHandler) DeleteCartProduct(ctx *gin.Context) {
+	idUserString := ctx.GetString("id")
+	idUser, _ := uuid.Parse(idUserString)
+	idProductString := ctx.Param("id-product")
+	idProduct, _ := uuid.Parse(idProductString)
+
+	if err := h.cartService.DeleteCartProduct(idProduct, idUser); err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"meta": model.Meta{
+				Message: err.Error(),
+				Status:  500,
+			},
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"meta": model.Meta{
+			Message: "success",
+			Status:  200,
+		},
+	})
+}

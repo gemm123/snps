@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"github.com/google/uuid"
 	"log"
 	"synapsis/internal/model"
@@ -16,6 +17,7 @@ type cartService struct {
 type CartService interface {
 	AddProductToCart(cartRequest model.CartRequest, idUser uuid.UUID) error
 	GetAllCartProduct(idUser uuid.UUID) (model.CartResponse, error)
+	DeleteCartProduct(idProduct, idUser uuid.UUID) error
 }
 
 func NewCartService(cartRepository repository.CartRepository, productRepository repository.ProductRepository) *cartService {
@@ -151,4 +153,40 @@ func (s *cartService) GetAllCartProduct(idUser uuid.UUID) (model.CartResponse, e
 
 	return cartResponse, nil
 
+}
+
+func (s *cartService) DeleteCartProduct(idProduct, idUser uuid.UUID) error {
+	cart, err := s.cartRepository.GetCartByIdUser(idUser)
+	if err != nil {
+		log.Println("error: " + err.Error())
+		return err
+	}
+
+	cartProduct, err := s.cartRepository.GetCartProduct(cart.Id, idProduct)
+	if err != nil {
+		log.Println("error: " + err.Error())
+		return err
+	}
+
+	fmt.Println(cartProduct)
+
+	if err := s.cartRepository.DeleteCartProduct(cartProduct); err != nil {
+		log.Println("error: " + err.Error())
+		return err
+	}
+
+	cart.Total = cart.Total - cartProduct.Total
+	if cart.Total == 0 {
+		if err := s.cartRepository.DeleteCart(cart); err != nil {
+			log.Println("error: " + err.Error())
+			return err
+		}
+	} else {
+		if err := s.cartRepository.UpdateCart(cart); err != nil {
+			log.Println("error: " + err.Error())
+			return err
+		}
+	}
+
+	return nil
 }

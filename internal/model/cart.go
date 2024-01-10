@@ -29,6 +29,10 @@ type CartRequest struct {
 	Total     int       `json:"total" binding:"required"`
 }
 
+type CartProductRequestDelete struct {
+	IdProduct uuid.UUID `json:"id_product" binding:"required"`
+}
+
 type CartResponse struct {
 	IdCart      uuid.UUID             `json:"id_cart"`
 	TotalPrice  int                   `json:"total_price"`

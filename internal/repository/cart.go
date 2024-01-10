@@ -17,6 +17,9 @@ type CartRepository interface {
 	UpdateCart(cart model.Cart) error
 	UpdateCartProduct(ProductCart model.CartProduct) error
 	GetAllCartProductByIdCart(idCart uuid.UUID) ([]model.CartProduct, error)
+	DeleteCartProduct(cartProduct model.CartProduct) error
+	GetCartProduct(idCart, idProduct uuid.UUID) (model.CartProduct, error)
+	DeleteCart(cart model.Cart) error
 }
 
 func NewCartRepository(DB *gorm.DB) *cartRepository {
@@ -55,4 +58,30 @@ func (r *cartRepository) GetAllCartProductByIdCart(idCart uuid.UUID) ([]model.Ca
 	var cartProduct []model.CartProduct
 	err := r.DB.Table("cart_products").Where("id_cart = ?", idCart).Find(&cartProduct).Error
 	return cartProduct, err
+}
+
+func (r *cartRepository) GetCartProduct(idCart, idProduct uuid.UUID) (model.CartProduct, error) {
+	var cartProduct model.CartProduct
+	err := r.DB.Table("cart_products").Where("id_cart = ? AND id_product = ?", idCart, idProduct).Find(&cartProduct).Error
+	return cartProduct, err
+}
+
+func (r *cartRepository) DeleteCartProduct(cartProduct model.CartProduct) error {
+	existingRecord := r.DB.Table("cart_products").Where("id = ?", cartProduct.Id).First(&model.CartProduct{})
+	if existingRecord.Error != nil {
+		return gorm.ErrRecordNotFound
+	}
+
+	err := r.DB.Table("cart_products").Where("id = ?", cartProduct.Id).Delete(&cartProduct).Error
+	return err
+}
+
+func (r *cartRepository) DeleteCart(cart model.Cart) error {
+	existingRecord := r.DB.Table("carts").Where("id = ?", cart.Id).First(&model.Cart{})
+	if existingRecord.Error != nil {
+		return gorm.ErrRecordNotFound
+	}
+
+	err := r.DB.Table("carts").Where("id = ?", cart.Id).Delete(&cart).Error
+	return err
 }
