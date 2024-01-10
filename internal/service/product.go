@@ -45,6 +45,7 @@ func (s *productService) GetAllProductByCategoryName(name string) ([]model.Produ
 
 	for _, product := range products {
 		productResponse := model.ProductResponse{
+			Id:          product.Id,
 			Name:        product.Name,
 			Description: product.Description,
 			Category:    category,

@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"synapsis/internal/model"
 )
@@ -11,6 +12,7 @@ type productRepository struct {
 
 type ProductRepository interface {
 	GetAllProductByCategoryName(name string) ([]model.Product, error)
+	GetProductById(idProduct uuid.UUID) (model.Product, error)
 }
 
 func NewProductRepository(DB *gorm.DB) *productRepository {
@@ -27,4 +29,10 @@ func (r *productRepository) GetAllProductByCategoryName(name string) ([]model.Pr
 		Find(&products).
 		Error
 	return products, err
+}
+
+func (r *productRepository) GetProductById(idProduct uuid.UUID) (model.Product, error) {
+	var product model.Product
+	err := r.DB.Table("products").Where("id = ?", idProduct).Find(&product).Error
+	return product, err
 }

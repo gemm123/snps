@@ -7,6 +7,7 @@ import (
 	"synapsis/internal/handler"
 	"synapsis/internal/repository"
 	"synapsis/internal/service"
+	"synapsis/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -27,14 +28,17 @@ func main() {
 	userRepository := repository.NewUserRepository(db)
 	productRepository := repository.NewProductRepository(db)
 	categoryRepository := repository.NewCategoryRepository(db)
+	cartRepository := repository.NewCartRepository(db)
 
 	//service
 	userService := service.NewUserService(userRepository)
 	productService := service.NewProductService(productRepository, categoryRepository)
+	cartService := service.NewCartService(cartRepository, productRepository)
 
 	//handler
 	userHandler := handler.NewUserHandler(userService)
 	productHandler := handler.NewProductHandler(productService)
+	cartHandler := handler.NewCartHandler(cartService)
 
 	router := gin.Default()
 
@@ -42,7 +46,9 @@ func main() {
 	v1.POST("/register", userHandler.Register)
 	v1.POST("/login", userHandler.Login)
 
-	v1.GET("/category/:category-name/product", productHandler.GetAllProductByNameCategory)
+	v1.GET("/category/:category-name/product", middleware.Auth(), productHandler.GetAllProductByNameCategory)
+
+	v1.POST("/cart", middleware.Auth(), cartHandler.AddProductToCart)
 
 	router.Run()
 }

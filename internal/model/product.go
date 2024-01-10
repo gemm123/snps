@@ -18,10 +18,11 @@ type Product struct {
 }
 
 type ProductResponse struct {
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	Category    string `json:"category"`
-	Price       int    `json:"price"`
-	Stok        int    `json:"stok"`
-	Image       string `json:"image"`
+	Id          uuid.UUID `json:"id"`
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	Category    string    `json:"category"`
+	Price       int       `json:"price"`
+	Stok        int       `json:"stok"`
+	Image       string    `json:"image"`
 }
