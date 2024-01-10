@@ -57,6 +57,7 @@ func main() {
 
 	v1.POST("/order", middleware.Auth(), orderHandler.AddOrderProduct)
 	v1.GET("/order", middleware.Auth(), orderHandler.GetOrderProduct)
+	v1.PUT("/order/pay/:id-order", middleware.Auth(), orderHandler.PayOrder)
 
 	router.Run()
 }

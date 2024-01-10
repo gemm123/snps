@@ -89,3 +89,25 @@ func (h *orderHandler) GetOrderProduct(ctx *gin.Context) {
 		"data": orderResponses,
 	})
 }
+
+func (h *orderHandler) PayOrder(ctx *gin.Context) {
+	idOrderString := ctx.Param("id-order")
+	idOrder, _ := uuid.Parse(idOrderString)
+
+	if err := h.orderService.PayOrder(idOrder); err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"meta": model.Meta{
+				Message: err.Error(),
+				Status:  500,
+			},
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"meta": model.Meta{
+			Message: "success",
+			Status:  200,
+		},
+	})
+}

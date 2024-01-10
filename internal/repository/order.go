@@ -15,6 +15,8 @@ type OrderRepository interface {
 	InsertOrderProduct(orderProduct model.OrderProduct) error
 	GetAllOrderProductByIdOrder(idOrder uuid.UUID) ([]model.OrderProduct, error)
 	GetOrdersByIdUser(idUser uuid.UUID) ([]model.Order, error)
+	GetOrderById(idOrder uuid.UUID) (model.Order, error)
+	UpdateOrder(order model.Order) error
 }
 
 func NewOrderRepository(DB *gorm.DB) *orderRepository {
@@ -43,4 +45,15 @@ func (r *orderRepository) GetOrdersByIdUser(idUser uuid.UUID) ([]model.Order, er
 	var order []model.Order
 	err := r.DB.Table("orders").Where("id_user = ?", idUser).Find(&order).Error
 	return order, err
+}
+
+func (r *orderRepository) GetOrderById(idOrder uuid.UUID) (model.Order, error) {
+	var order model.Order
+	err := r.DB.Table("orders").Where("id = ?", idOrder).Find(&order).Error
+	return order, err
+}
+
+func (r *orderRepository) UpdateOrder(order model.Order) error {
+	err := r.DB.Save(&order).Error
+	return err
 }

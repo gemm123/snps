@@ -17,6 +17,7 @@ type orderService struct {
 type OrderService interface {
 	AddOrderProduct(orderProducts []model.OrderProductRequest, idUser uuid.UUID) error
 	GetAllOrderProduct(idUser uuid.UUID) ([]model.OrderResponse, error)
+	PayOrder(idOrder uuid.UUID) error
 }
 
 func NewOrderService(
@@ -128,4 +129,21 @@ func (s *orderService) GetAllOrderProduct(idUser uuid.UUID) ([]model.OrderRespon
 	}
 
 	return orderResponses, nil
+}
+
+func (s *orderService) PayOrder(idOrder uuid.UUID) error {
+	order, err := s.orderRepository.GetOrderById(idOrder)
+	if err != nil {
+		log.Println("error: " + err.Error())
+		return err
+	}
+
+	order.Status = "Paid"
+
+	if err := s.orderRepository.UpdateOrder(order); err != nil {
+		log.Println("error: " + err.Error())
+		return err
+	}
+
+	return nil
 }
