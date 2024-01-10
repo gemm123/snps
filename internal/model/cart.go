@@ -28,3 +28,17 @@ type CartRequest struct {
 	Quantity  int       `json:"quantity" binding:"required"`
 	Total     int       `json:"total" binding:"required"`
 }
+
+type CartResponse struct {
+	IdCart      uuid.UUID             `json:"id_cart"`
+	TotalPrice  int                   `json:"total_price"`
+	CartProduct []CartProductResponse `json:"cart_product"`
+}
+
+type CartProductResponse struct {
+	IdProduct uuid.UUID `json:"id_product"`
+	Name      string    `json:"name"`
+	Price     int       `json:"price"`
+	Quantity  int       `json:"quantity"`
+	Total     int       `json:"total"`
+}

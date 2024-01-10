@@ -49,6 +49,7 @@ func main() {
 	v1.GET("/category/:category-name/product", middleware.Auth(), productHandler.GetAllProductByNameCategory)
 
 	v1.POST("/cart", middleware.Auth(), cartHandler.AddProductToCart)
+	v1.GET("/cart", middleware.Auth(), cartHandler.GetCartProduct)
 
 	router.Run()
 }

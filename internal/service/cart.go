@@ -15,6 +15,7 @@ type cartService struct {
 
 type CartService interface {
 	AddProductToCart(cartRequest model.CartRequest, idUser uuid.UUID) error
+	GetAllCartProduct(idUser uuid.UUID) (model.CartResponse, error)
 }
 
 func NewCartService(cartRepository repository.CartRepository, productRepository repository.ProductRepository) *cartService {
@@ -110,4 +111,44 @@ func (s *cartService) AddProductToCart(cartRequest model.CartRequest, idUser uui
 	}
 
 	return nil
+}
+
+func (s *cartService) GetAllCartProduct(idUser uuid.UUID) (model.CartResponse, error) {
+	var cartResponse model.CartResponse
+
+	cart, err := s.cartRepository.GetCartByIdUser(idUser)
+	if err != nil {
+		log.Println("error: " + err.Error())
+		return cartResponse, err
+	}
+
+	cartProducts, err := s.cartRepository.GetAllCartProductByIdCart(cart.Id)
+	if err != nil {
+		log.Println("error: " + err.Error())
+		return cartResponse, err
+	}
+
+	cartResponse.IdCart = cart.Id
+	cartResponse.TotalPrice = cart.Total
+
+	for _, cartProduct := range cartProducts {
+		product, err := s.productRepository.GetProductById(cartProduct.IdProduct)
+		if err != nil {
+			log.Println("error: " + err.Error())
+			return cartResponse, err
+		}
+
+		cp := model.CartProductResponse{
+			IdProduct: cartProduct.IdProduct,
+			Name:      product.Name,
+			Price:     product.Price,
+			Quantity:  cartProduct.Quantity,
+			Total:     cartProduct.Total,
+		}
+
+		cartResponse.CartProduct = append(cartResponse.CartProduct, cp)
+	}
+
+	return cartResponse, nil
+
 }
