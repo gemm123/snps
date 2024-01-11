@@ -5,7 +5,7 @@
         "contact": {},
         "version": "1.0"
     },
-    "host": "localhost:8080",
+    "host": "108.136.166.182:80",
     "basePath": "/api/v1",
     "paths": {
         "/cart": {
