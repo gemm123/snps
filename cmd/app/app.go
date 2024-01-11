@@ -16,7 +16,7 @@ import (
 
 // @title           Swagger Synapsis API
 // @version         1.0
-// @host      localhost:8080
+// @host      108.136.166.182:80
 // @BasePath  /api/v1
 func main() {
 	err := godotenv.Load()
@@ -67,5 +67,5 @@ func main() {
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	router.Run()
+	router.Run(":80")
 }

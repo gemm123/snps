@@ -5,6 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    image: gemm123/snps-app
     container_name: snps-app
     environment:
       DATABASE_HOST: postgres
