@@ -24,7 +24,10 @@ type Register struct {
 	Phone    string `json:"phone" binding:"required"`
 }
 
+// swagger:model Login
 type Login struct {
-	Email    string `json:"email" binding:"required,email"`
+	// example: gema@gema.com
+	Email string `json:"email" binding:"required,email"`
+	// example: gema
 	Password string `json:"password" binding:"required"`
 }

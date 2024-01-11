@@ -18,6 +18,18 @@ func NewCartHandler(cartService service.CartService) *cartHandler {
 	}
 }
 
+// @Summary Add product to cart
+// @Description add product to cart
+// @Tags cart
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "Authorization header (Bearer [token])"
+// @Param request body model.CartRequest true "cart request details"
+// @Security ApiKeyAuth
+// @Success 200 {object} model.Meta "add product to cart success"
+// @Failure 500 {object} model.Meta "Internal Server Error"
+// @Failure 400 {object} model.Meta "Bad Request"
+// @Router /cart [post]
 func (h *cartHandler) AddProductToCart(ctx *gin.Context) {
 	var cartRequest model.CartRequest
 
@@ -52,6 +64,15 @@ func (h *cartHandler) AddProductToCart(ctx *gin.Context) {
 	})
 }
 
+// @Summary Get cart product
+// @Description get product at cart
+// @Tags cart
+// @Produce json
+// @Param Authorization header string true "Authorization header (Bearer [token])"
+// @Security ApiKeyAuth
+// @Success 200 {object} model.DataResponse "add product to cart success"
+// @Failure 500 {object} model.Meta "Internal Server Error"
+// @Router /cart [get]
 func (h *cartHandler) GetCartProduct(ctx *gin.Context) {
 	idUserString := ctx.GetString("id")
 	idUser, _ := uuid.Parse(idUserString)
@@ -67,15 +88,25 @@ func (h *cartHandler) GetCartProduct(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{
-		"meta": model.Meta{
+	ctx.JSON(http.StatusOK, model.DataResponse{
+		Meta: model.Meta{
 			Message: "success",
 			Status:  200,
 		},
-		"data": cartResponse,
+		Data: cartResponse,
 	})
 }
 
+// @Summary Delete cart product
+// @Description Delete product at cart
+// @Tags cart
+// @Produce json
+// @Param id-product path string true "id product"
+// @Param Authorization header string true "Authorization header (Bearer [token])"
+// @Security ApiKeyAuth
+// @Success 200 {object} model.Meta "success delete"
+// @Failure 500 {object} model.Meta "Internal Server Error"
+// @Router /cart/delete/{id-product} [delete]
 func (h *cartHandler) DeleteCartProduct(ctx *gin.Context) {
 	idUserString := ctx.GetString("id")
 	idUser, _ := uuid.Parse(idUserString)

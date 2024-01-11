@@ -1,0 +1,360 @@
+basePath: /api/v1
+definitions:
+  model.CartRequest:
+    properties:
+      id_product:
+        type: string
+      quantity:
+        type: integer
+      total:
+        type: integer
+    required:
+    - id_product
+    - quantity
+    - total
+    type: object
+  model.DataResponse:
+    properties:
+      data: {}
+      meta:
+        $ref: '#/definitions/model.Meta'
+    type: object
+  model.Login:
+    properties:
+      email:
+        description: 'example: gema@gema.com'
+        type: string
+      password:
+        description: 'example: gema'
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  model.LoginResponse:
+    properties:
+      meta:
+        $ref: '#/definitions/model.Meta'
+      token:
+        type: string
+    type: object
+  model.Meta:
+    properties:
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  model.OrderProductRequest:
+    properties:
+      id_product:
+        type: string
+      quantity:
+        type: integer
+      total:
+        type: integer
+    required:
+    - id_product
+    - quantity
+    - total
+    type: object
+  model.Register:
+    properties:
+      address:
+        type: string
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+    required:
+    - address
+    - email
+    - name
+    - password
+    - phone
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  title: Swagger Synapsis API
+  version: "1.0"
+paths:
+  /cart:
+    get:
+      description: get product at cart
+      parameters:
+      - description: Authorization header (Bearer [token])
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: add product to cart success
+          schema:
+            $ref: '#/definitions/model.DataResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Meta'
+      security:
+      - ApiKeyAuth: []
+      summary: Get cart product
+      tags:
+      - cart
+    post:
+      consumes:
+      - application/json
+      description: add product to cart
+      parameters:
+      - description: Authorization header (Bearer [token])
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: cart request details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.CartRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: add product to cart success
+          schema:
+            $ref: '#/definitions/model.Meta'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Meta'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Meta'
+      security:
+      - ApiKeyAuth: []
+      summary: Add product to cart
+      tags:
+      - cart
+  /cart/delete/{id-product}:
+    delete:
+      description: Delete product at cart
+      parameters:
+      - description: id product
+        in: path
+        name: id-product
+        required: true
+        type: string
+      - description: Authorization header (Bearer [token])
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success delete
+          schema:
+            $ref: '#/definitions/model.Meta'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Meta'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete cart product
+      tags:
+      - cart
+  /category/{category-name}/product:
+    get:
+      description: Retrieve a list of products based on the specified category name
+      parameters:
+      - description: Category name (baju/celana/topi)
+        in: path
+        name: category-name
+        required: true
+        type: string
+      - description: Authorization header (Bearer [token])
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of products
+          schema:
+            $ref: '#/definitions/model.DataResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Meta'
+      security:
+      - ApiKeyAuth: []
+      summary: Get all products by category name
+      tags:
+      - product
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Login user with the provided details
+      parameters:
+      - description: User login details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.Login'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Login success
+          schema:
+            $ref: '#/definitions/model.LoginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Meta'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Meta'
+      summary: Login  user
+      tags:
+      - user
+  /order:
+    get:
+      description: Get all order product
+      parameters:
+      - description: Authorization header (Bearer [token])
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: add product to cart success
+          schema:
+            $ref: '#/definitions/model.DataResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Meta'
+      security:
+      - ApiKeyAuth: []
+      summary: Get order product
+      tags:
+      - order
+    post:
+      consumes:
+      - application/json
+      description: Add products to order
+      parameters:
+      - description: Authorization header (Bearer [token])
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: order product details
+        in: body
+        name: request
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/model.OrderProductRequest'
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: add product to cart success
+          schema:
+            $ref: '#/definitions/model.Meta'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Meta'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Meta'
+      security:
+      - ApiKeyAuth: []
+      summary: Add order products
+      tags:
+      - order
+  /order/pay/{id-order}:
+    put:
+      description: Pay order to change status order
+      parameters:
+      - description: Authorization header (Bearer [token])
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: id order
+        in: path
+        name: id-order
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: add product to cart success
+          schema:
+            $ref: '#/definitions/model.Meta'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Meta'
+      security:
+      - ApiKeyAuth: []
+      summary: Pay order
+      tags:
+      - order
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user with the provided details
+      parameters:
+      - description: User registration details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.Register'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Registration success
+          schema:
+            $ref: '#/definitions/model.Meta'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.Meta'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Meta'
+      summary: Register a new user
+      tags:
+      - user
+swagger: "2.0"

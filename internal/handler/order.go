@@ -20,6 +20,18 @@ func NewOrderHandler(orderService service.OrderService, cartService service.Cart
 	}
 }
 
+// @Summary Add order products
+// @Description Add products to order
+// @Tags order
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "Authorization header (Bearer [token])"
+// @Param request body []model.OrderProductRequest true "order product details"
+// @Security ApiKeyAuth
+// @Success 200 {object} model.Meta "add product to cart success"
+// @Failure 500 {object} model.Meta "Internal Server Error"
+// @Failure 400 {object} model.Meta "Bad Request"
+// @Router /order [post]
 func (h *orderHandler) AddOrderProduct(ctx *gin.Context) {
 	var orderProductRequest []model.OrderProductRequest
 
@@ -66,6 +78,15 @@ func (h *orderHandler) AddOrderProduct(ctx *gin.Context) {
 	})
 }
 
+// @Summary Get order product
+// @Description Get all order product
+// @Tags order
+// @Produce json
+// @Param Authorization header string true "Authorization header (Bearer [token])"
+// @Security ApiKeyAuth
+// @Success 200 {object} model.DataResponse "add product to cart success"
+// @Failure 500 {object} model.Meta "Internal Server Error"
+// @Router /order [get]
 func (h *orderHandler) GetOrderProduct(ctx *gin.Context) {
 	idUserString := ctx.GetString("id")
 	idUser, _ := uuid.Parse(idUserString)
@@ -81,15 +102,25 @@ func (h *orderHandler) GetOrderProduct(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{
-		"meta": model.Meta{
+	ctx.JSON(http.StatusOK, model.DataResponse{
+		Meta: model.Meta{
 			Message: "success",
 			Status:  200,
 		},
-		"data": orderResponses,
+		Data: orderResponses,
 	})
 }
 
+// @Summary Pay order
+// @Description Pay order to change status order
+// @Tags order
+// @Produce json
+// @Param Authorization header string true "Authorization header (Bearer [token])"
+// @Param id-order path string true "id order"
+// @Security ApiKeyAuth
+// @Success 200 {object} model.Meta "add product to cart success"
+// @Failure 500 {object} model.Meta "Internal Server Error"
+// @Router /order/pay/{id-order} [put]
 func (h *orderHandler) PayOrder(ctx *gin.Context) {
 	idOrderString := ctx.Param("id-order")
 	idOrder, _ := uuid.Parse(idOrderString)

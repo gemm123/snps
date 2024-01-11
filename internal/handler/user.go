@@ -17,6 +17,16 @@ func NewUserHandler(userService service.UserService) *userHandler {
 	}
 }
 
+// @Summary Register a new user
+// @Description Register a new user with the provided details
+// @Tags user
+// @Accept json
+// @Produce json
+// @Param request body model.Register true "User registration details"
+// @Success 200 {object} model.Meta "Registration success"
+// @Failure 400 {object} model.Meta "Bad Request"
+// @Failure 500 {object} model.Meta "Internal Server Error"
+// @Router /register [post]
 func (h *userHandler) Register(ctx *gin.Context) {
 	var userRegister model.Register
 
@@ -48,6 +58,16 @@ func (h *userHandler) Register(ctx *gin.Context) {
 	})
 }
 
+// @Summary Login  user
+// @Description Login user with the provided details
+// @Tags user
+// @Accept json
+// @Produce json
+// @Param request body model.Login true "User login details"
+// @Success 200 {object} model.LoginResponse "Login success"
+// @Failure 400 {object} model.Meta "Bad Request"
+// @Failure 500 {object} model.Meta "Internal Server Error"
+// @Router /login [post]
 func (h *userHandler) Login(ctx *gin.Context) {
 	var login model.Login
 
@@ -72,11 +92,11 @@ func (h *userHandler) Login(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{
-		"meta": model.Meta{
+	ctx.JSON(http.StatusOK, model.LoginResponse{
+		Meta: model.Meta{
 			Message: "success",
 			Status:  200,
 		},
-		"token": token,
+		Token: token,
 	})
 }

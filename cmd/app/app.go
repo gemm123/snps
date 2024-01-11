@@ -1,17 +1,23 @@
 package main
 
 import (
+	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"log"
 	"synapsis/config"
+	_ "synapsis/docs"
 	"synapsis/internal/handler"
 	"synapsis/internal/repository"
 	"synapsis/internal/service"
 	"synapsis/middleware"
-
-	"github.com/gin-gonic/gin"
 )
 
+// @title           Swagger Synapsis API
+// @version         1.0
+// @host      localhost:8080
+// @BasePath  /api/v1
 func main() {
 	err := godotenv.Load()
 	if err != nil {
@@ -58,6 +64,8 @@ func main() {
 	v1.POST("/order", middleware.Auth(), orderHandler.AddOrderProduct)
 	v1.GET("/order", middleware.Auth(), orderHandler.GetOrderProduct)
 	v1.PUT("/order/pay/:id-order", middleware.Auth(), orderHandler.PayOrder)
+
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	router.Run()
 }
