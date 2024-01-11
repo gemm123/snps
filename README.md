@@ -30,7 +30,17 @@ This application use:
    ```bash
    make install
    ```
-   
+
+## Configuration
+
+1. Copy the example env file:
+
+    ```bash
+   cp .env.example .env
+    ```
+
+2. Open `.env` file and configure environment variables
+
 ## Using Docker Compose
 
 1. Run docker compose
@@ -46,16 +56,6 @@ This application use:
    ```
 
 3. Happy run program
-
-## Configuration
-
-1. Copy the example env file:
-
-    ```bash
-   cp .env.example .env
-    ```
-
-2. Open `.env` file and configure environment variables
 
 ## Database Setup
 
