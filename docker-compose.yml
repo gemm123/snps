@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: snps-app
+    environment:
+      DATABASE_HOST: postgres
+      DATABASE_USER: postgres
+      DATABASE_PASSWORD: postgres
+      DATABASE_NAME: synapsis
+      DATABASE_PORT: "5432"
+      JWT_SECRETKEY: synapsis
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:13.4
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: synapsis
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./database/dummy_dump2.sql:/docker-entrypoint-initdb.d/dummy_dump.sql
